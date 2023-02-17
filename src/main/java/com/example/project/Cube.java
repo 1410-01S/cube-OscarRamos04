@@ -117,7 +117,4 @@ public class Cube {
 		input.close();
 	}
 
-	}
-
 }
-
