@@ -1,8 +1,11 @@
+import java.util.ArrayList;
 
 public class rubiksCube {
 	//fields
 	int size;
 	char cube[][];
+	ArrayList <String> solutionStack = new ArrayList<>();
+
 
 	//constructor
 	public rubiksCube(int size) {
@@ -108,6 +111,57 @@ public class rubiksCube {
 		System.out.println();
 	}
 
+	public void printCubeAssignment(){
+		int faceRowStart = 0;
+		int faceColumnStart = size;
+
+		//print top
+		for(int j = 0; j < size; j++){
+			for(int k = 0; k < size; k++){
+				System.out.print(cube[faceRowStart+j][faceColumnStart+k]);
+				if(k < size-1){
+					System.out.print("|");
+				}
+			}	
+			System.out.println();
+		}
+		System.out.println();
+
+		faceRowStart = size;
+		faceColumnStart= 0;
+
+		//print middle
+		for(int i = 0; i < 4; i++){
+			for(int j = 0; j < size; j++){
+				for(int k = 0; k < size; k++){
+
+					System.out.print(cube[faceRowStart+j][faceColumnStart+k]);
+					if(k < size-1){
+						System.out.print("|");
+					}
+				}	
+				System.out.println();
+			}
+			System.out.println();
+
+			faceColumnStart+= size;
+		}
+		//print bottom
+		faceRowStart = size * 2;
+		faceColumnStart = size;
+		for(int j = 0; j < size; j++){
+			for(int k = 0; k < size; k++){
+
+				System.out.print(cube[faceRowStart+j][faceColumnStart+k]);
+				if(k < size-1){
+					System.out.print("|");
+				}
+			}	
+			System.out.println();
+		}
+
+	}
+
 	public void horizontalShift(char dir, int loc) {
 		char tempCube[][] = cube;
 
@@ -186,9 +240,9 @@ public class rubiksCube {
 
 	//Location based from 1-7, based on what face you want to rotate
 	public void faceShift(char dir, int loc){
-		faceShift(dir, loc, false);
+		faceShift(dir, loc, 0);
 	}
-	public void faceShift(char dir, int loc, boolean special) {
+	public void faceShift(char dir, int loc,  int special) {
 		int faceRowStart = 0;
 		int faceColumnStart = 0;
 		char tempCube[][] = cube;
@@ -226,69 +280,82 @@ public class rubiksCube {
 			break;	
 		}
 
-		int loopAmount;
-		if(special){
+		int rotationAmount = 0;
+
+
+		switch(special) {
+		case 0:
+			rotationAmount = size;
+			break;
+		case 1:
 			faceColumnStart--;
 			faceRowStart--;
-			loopAmount = (size*2) - 1;
-		} else
-			loopAmount = size;
+			rotationAmount = (size) + 2;
+			break;
+		case 2:
+			faceColumnStart = 0;
+			faceRowStart = 0;
+			rotationAmount = (size*3);
+			break;
+		}
 
 		char storedValue;
 		switch(dir) {
 		case 'l':
-			for(int k = 1; k < loopAmount; k++) {
-				int startX = faceColumnStart;
-				int startY = faceRowStart;
-				storedValue = tempCube[faceRowStart][faceColumnStart];	
-				for(int i = 1; i < loopAmount; i++) {
+			for(int k = 1; k < rotationAmount; k++) {
+				storedValue = tempCube[faceRowStart][faceColumnStart];
+				for(int i = 1; i < rotationAmount; i++) {
+
 					tempCube[faceRowStart][faceColumnStart] = tempCube[faceRowStart][faceColumnStart+1];
 					faceColumnStart++;
 				}
-				for(int i = 1; i < loopAmount; i++) {
+
+				for(int i = 1; i < rotationAmount; i++) {
 					tempCube[faceRowStart][faceColumnStart] = tempCube[faceRowStart+1][faceColumnStart];
 					faceRowStart++;
 				}
-				for(int i = 1; i < loopAmount; i++) {
+
+				for(int i = 1; i < rotationAmount; i++) {
 					tempCube[faceRowStart][faceColumnStart] = tempCube[faceRowStart][faceColumnStart-1];
 					faceColumnStart--;
 				}
-				for(int i = 0; i < ((loopAmount +1) / 2); i++){
+
+				for(int i = 1; i < rotationAmount; i++) {
 					tempCube[faceRowStart][faceColumnStart] = tempCube[faceRowStart-1][faceColumnStart];
 					faceRowStart--;
 				}
-				tempCube[faceRowStart][faceColumnStart] = storedValue;
-				faceColumnStart = startX;
-				faceRowStart = startY;
+
+				tempCube[faceRowStart+1][faceColumnStart] = storedValue;
 			}
-			
+
 			break;
 		case 'r':
-			for(int k = 1; k < loopAmount; k++) {
-				int startX = faceColumnStart;
-				int startY = faceRowStart;
-				storedValue = tempCube[faceRowStart][faceColumnStart];	
-				for(int i = 1; i < loopAmount; i++) {
+			for(int k = 1; k < rotationAmount; k++) {
+				storedValue = tempCube[faceRowStart][faceColumnStart];
+				for(int i = 1; i < rotationAmount; i++) {
+
 					tempCube[faceRowStart][faceColumnStart] = tempCube[faceRowStart+1][faceColumnStart];
 					faceRowStart++;
 				}
-				for(int i = 1; i < loopAmount; i++) {
+
+				for(int i = 1; i < rotationAmount; i++) {
 					tempCube[faceRowStart][faceColumnStart] = tempCube[faceRowStart][faceColumnStart+1];
 					faceColumnStart++;
 				}
-				for(int i = 1; i < loopAmount; i++) {
+
+				for(int i = 1; i < rotationAmount; i++) {
 					tempCube[faceRowStart][faceColumnStart] = tempCube[faceRowStart-1][faceColumnStart];
 					faceRowStart--;
 				}
-				for(int i = 0; i < ((loopAmount +1) / 2); i++){
+
+				for(int i = 1; i < rotationAmount; i++) {
 					tempCube[faceRowStart][faceColumnStart] = tempCube[faceRowStart][faceColumnStart-1];
 					faceColumnStart--;
 				}
-				tempCube[faceRowStart][faceColumnStart] = storedValue;
-				faceColumnStart = startX;
-				faceRowStart = startY;
+
+				tempCube[faceRowStart][faceColumnStart+1] = storedValue;
 			}
-			
+
 			break;
 		default: 
 			System.out.println("invalid rotation value");
@@ -298,7 +365,7 @@ public class rubiksCube {
 		cube = tempCube;
 	}
 
-	
+
 	//true = update using back on face 5
 	public void updateBack(boolean loc) {
 		char tempCube[][] = cube;
@@ -320,9 +387,10 @@ public class rubiksCube {
 		}
 		for(int i = 0; i < size ; i++) {
 			for(int j = 0; j < size; j++) {
-				//rowcorner = 3 columnCorner = 9
-				//rcn=9 ccn=3
-				tempCube[rowCorner+i][columnCorner+j] = tempCube[rCN+(2-i)][cCN+(2-j)];
+				// CC=2 RC = 6
+				//rCN = 2 cCN = 6
+
+				tempCube[rowCorner+i][columnCorner+j] = tempCube[rCN+((size-1)-i)][cCN+(size-1)-j];
 			}
 		}
 
@@ -334,9 +402,11 @@ public class rubiksCube {
 		if(prime) {
 			horizontalShift('r', size);
 			faceShift('l', 1);
+			solutionStack.add("u");
 		} else {
 			horizontalShift('l', size);
 			faceShift('r', 1);
+			solutionStack.add("u'");
 		}
 		updateBack(true);
 	}
@@ -345,9 +415,11 @@ public class rubiksCube {
 		if(!prime) {
 			verticalShift('u', (size*2) - 1);
 			faceShift('r', 4);
+			solutionStack.add("r'");
 		} else {
 			verticalShift('d', (size*2) - 1);
 			faceShift('l', 4);
+			solutionStack.add("r");
 		}
 		updateBack(false);
 	}
@@ -356,10 +428,12 @@ public class rubiksCube {
 		if(prime) {
 			horizontalShift('l',(size*2)-1);
 			faceShift('l',6);
+			solutionStack.add("d");
 		}
 		else {
 			horizontalShift('r',(size*2)-1);
 			faceShift('r',6);
+			solutionStack.add("d'");
 		}
 
 		updateBack(true);
@@ -369,17 +443,47 @@ public class rubiksCube {
 		if(prime) {
 			verticalShift('u',size);
 			faceShift('l', 2);
+			solutionStack.add("l");
 		} else {
 			verticalShift('d', size);
 			faceShift('r', 2);
+			solutionStack.add("l'");
 		}
+		updateBack(false);
 	}
 
 	public void f(boolean prime) {
 		if(prime) {
-			faceShift('l',3, true);
-		} else
-			faceShift('r',3,true);
+			faceShift('l',3, 1);
+			faceShift('l',3);
+			solutionStack.add("f");
+		} else {
+			faceShift('r',3);
+			faceShift('r',3,1);
+			solutionStack.add("f'");
+		}
+	}
+
+	public void b(boolean prime) {
+		if(prime) {
+			faceShift('l', 5);
+			faceShift('r',5,2);
+			solutionStack.add("b");
+		} else {
+			faceShift('r', 5);
+			faceShift('l',5,2);
+			solutionStack.add("b'");
+		}
+		updateBack(true);
+	}
+
+	public String solution(){
+		String returnVal = "";
+		for(int i = (solutionStack.size() - 1); i >= 0 ; i--) {
+			returnVal += solutionStack.get(i) + " ";
+			solutionStack.remove(i);
+		}
+		return returnVal;
 	}
 
 }
