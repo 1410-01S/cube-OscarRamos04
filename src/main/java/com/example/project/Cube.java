@@ -57,8 +57,7 @@ public class Cube {
 			myCube.printCubeAssignment();
 			System.out.print("Solution: " + myCube.solution());
 
-		}
-		
+		} else {
 		System.out.println("Welcome! What size would you like for your cube?");
 		myCube = new rubiksCube(input.nextInt());
 		myCube.printCubeXY();
@@ -113,6 +112,7 @@ public class Cube {
 				break;
 			}
 			myCube.printCubeXY();
+			}
 		}
 		
 		input.close();
