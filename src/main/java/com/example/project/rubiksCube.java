@@ -208,6 +208,7 @@ public class rubiksCube {
 
 
 			for (int k = 0; k < size; k++) {
+				lastVal = tempCube[tempCube.length-1][loc];
 
 				for(int i = tempCube.length-1; i > 0; i--) {
 					tempCube[i][loc] = tempCube[i-1][loc];
@@ -222,6 +223,7 @@ public class rubiksCube {
 
 
 			for (int k = 0; k < size; k++) {
+				firstVal = tempCube[0][loc];
 
 				for(int i = 0; i < tempCube.length-1; i++) {
 					tempCube[i][loc] = tempCube[i+1][loc];
